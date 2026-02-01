@@ -13,17 +13,27 @@ yarn-error.log*
 .env.*
 
 ################################
-# Python / AI
+# Python / AI (IGNORE PYTHON ONLY)
 ################################
 backend/.venv/
 backend/venv/
-backend/src/ai/
+
+# ignore python files only
+backend/src/ai/*.py
+backend/src/ai/__pycache__/
+
+# ignore model files anywhere
 *.h5
 *.pt
 *.pth
 *.onnx
 *.pickle
 *.pkl
+
+################################
+# Runtime uploads (patients data)
+################################
+backend/uploads/
 
 ################################
 # Python cache
@@ -44,3 +54,8 @@ Thumbs.db
 ################################
 logs/
 *.log
+
+################################
+# ALLOW JS AI INTEGRATION FILES
+################################
+!backend/src/ai/*.js

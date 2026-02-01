@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم – بصيرة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+        <h2 class="sidebar-title">بصيرة</h2>
+
+        <a href="dashboard.html" class="sidebar-link active">لوحة التحكم</a>
+        <a href="scan.html" class="sidebar-link">بدء فحص جديد</a>
+        <a href="analysis.html" class="sidebar-link">التحليلات</a>
+        <a href="reports.html" class="sidebar-link">التقارير</a>
+        <a href="users.html" class="sidebar-link">إدارة المستخدمين</a>
+        <a href="billing.html" class="sidebar-link">الفوترة</a>
+        <a href="settings.html" class="sidebar-link">الإعدادات</a>
+        <a href="index.html" class="logout">تسجيل خروج</a>
+    </aside>
+
+    <!-- المحتوى -->
+    <main class="main-content">
+
+        <h1 class="page-title">لوحة التحكم</h1>
+
+        <!-- البطاقات -->
+        <div class="cards-row">
+
+            <div class="stat-card">
+                <p class="stat-title">إجمالي الفحوصات</p>
+                <h2 class="stat-number">145</h2>
+            </div>
+
+            <div class="stat-card yellow">
+                <p class="stat-title">قيد التحليل</p>
+                <h2 class="stat-number">23</h2>
+            </div>
+
+            <div class="stat-card red">
+                <p class="stat-title">حالات مشتبه بها</p>
+                <h2 class="stat-number">9</h2>
+            </div>
+
+            <div class="stat-card blue">
+                <p class="stat-title">الإيرادات</p>
+                <h2 class="stat-number">$4,780</h2>
+            </div>
+
+        </div>
+
+    </main>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

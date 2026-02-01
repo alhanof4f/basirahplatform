@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<script src="app.js"></script>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>الإعدادات – منصة بصيرة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-soft text-main flex">
+
+  <!-- الشريط الجانبي -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">ب</div>
+      <h3 class="sidebar-title">منصة بصيرة</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="sidebar-link">لوحة التحكم</a>
+      <a href="scan.html" class="sidebar-link">بدء فحص جديد</a>
+      <a href="analysis.html" class="sidebar-link">التحليل</a>
+      <a href="reports.html" class="sidebar-link">التقارير</a>
+      <a href="users.html" class="sidebar-link">إدارة المستخدمين</a>
+      <a href="billing.html" class="sidebar-link">الفوترة</a>
+      <a href="support.html" class="sidebar-link">الدعم الفني</a>
+      <a href="settings.html" class="sidebar-link active">الإعدادات</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="login.html" class="logout-btn">تسجيل الخروج</a>
+    </div>
+  </aside>
+
+  <!-- المحتوى -->
+  <main class="main-content">
+
+    <h1 class="page-title">الإعدادات</h1>
+
+    <section class="box mt-6">
+      <h2 class="sub-title">إعدادات المركز</h2>
+
+      <div class="mt-4 space-y-4">
+        
+        <div>
+          <label class="field-label">اسم المركز</label>
+          <input type="text" class="input" value="مركز بصيرة للنمو والسلوك">
+        </div>
+
+        <div>
+          <label class="field-label">شعار المركز</label>
+          <input type="file" class="input">
+        </div>
+
+        <div>
+          <label class="field-label">لغة المنصة</label>
+          <select class="select">
+            <option>العربية</option>
+            <option>English</option>
+          </select>
+        </div>
+
+        <button class="big-btn bg-primary hover:bg-primary-dark">حفظ التغييرات</button>
+      </div>
+    </section>
+
+    <section class="box mt-6">
+      <h2 class="sub-title">أمان الحساب</h2>
+
+      <div class="mt-4 space-y-4">
+
+        <div>
+          <label class="field-label">كلمة المرور الحالية</label>
+          <input type="password" class="input">
+        </div>
+
+        <div>
+          <label class="field-label">كلمة المرور الجديدة</label>
+          <input type="password" class="input">
+        </div>
+
+        <div>
+          <label class="field-label">تأكيد كلمة المرور</label>
+          <input type="password" class="input">
+        </div>
+
+        <button class="big-btn bg-dark hover:bg-black">تحديث كلمة المرور</button>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

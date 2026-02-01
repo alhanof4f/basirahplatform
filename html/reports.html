@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<script src="app.js"></script>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>التقارير – منصة بصيرة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-soft text-main flex">
+
+  <!-- الشريط الجانبي -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">ب</div>
+      <h3 class="sidebar-title">منصة بصيرة</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="sidebar-link">لوحة التحكم</a>
+      <a href="scan.html" class="sidebar-link">بدء فحص جديد</a>
+      <a href="analysis.html" class="sidebar-link">التحليل</a>
+      <a href="reports.html" class="sidebar-link active">التقارير</a>
+      <a href="users.html" class="sidebar-link">إدارة المستخدمين</a>
+      <a href="billing.html" class="sidebar-link">الفوترة</a>
+      <a href="support.html" class="sidebar-link">الدعم الفني</a>
+      <a href="settings.html" class="sidebar-link">الإعدادات</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="login.html" class="logout-btn">تسجيل الخروج</a>
+    </div>
+  </aside>
+
+  <!-- المحتوى -->
+  <main class="main-content">
+    
+    <h1 class="page-title">التقارير</h1>
+
+    <section class="box mt-6">
+      <h2 class="sub-title">قائمة التقارير</h2>
+
+      <table class="report-table mt-4">
+        <thead>
+          <tr>
+            <th>اسم الطفل</th>
+            <th>تاريخ الفحص</th>
+            <th>نسبة الاشتباه</th>
+            <th>الحالة</th>
+            <th>إجراء</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>محمد</td>
+            <td>2025-01-12</td>
+            <td>78%</td>
+            <td class="text-red-600 font-bold">بحاجة لمتابعة</td>
+            <td>
+              <button class="table-btn">تحميل التقرير</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>سارة</td>
+            <td>2025-01-09</td>
+            <td>32%</td>
+            <td class="text-green-600 font-bold">سليم</td>
+            <td>
+              <button class="table-btn">تحميل التقرير</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>ليان</td>
+            <td>2025-01-06</td>
+            <td>60%</td>
+            <td class="text-yellow-600 font-bold">مؤشرات بسيطة</td>
+            <td>
+              <button class="table-btn">تحميل التقرير</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

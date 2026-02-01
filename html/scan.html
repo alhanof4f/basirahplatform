@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<script src="app.js"></script>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>بدء فحص جديد – منصة بصيرة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-soft text-main flex">
+
+  <!-- الشريط الجانبي -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">ب</div>
+      <h3 class="sidebar-title">منصة بصيرة</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="sidebar-link">لوحة التحكم</a>
+      <a href="scan.html" class="sidebar-link active">بدء فحص جديد</a>
+      <a href="analysis.html" class="sidebar-link">التحليلات</a>
+      <a href="reports.html" class="sidebar-link">التقارير</a>
+      <a href="users.html" class="sidebar-link">إدارة المستخدمين</a>
+      <a href="billing.html" class="sidebar-link">الاشتراكات والفوترة</a>
+      <a href="support.html" class="sidebar-link">الدعم الفني</a>
+      <a href="settings.html" class="sidebar-link">الإعدادات</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="login.html" class="logout-btn">تسجيل الخروج</a>
+    </div>
+  </aside>
+
+  <!-- المحتوى -->
+  <main class="main-content">
+
+    <h1 class="page-title">بدء فحص جديد</h1>
+
+    <!-- نموذج بيانات الطفل -->
+    <section class="box mt-6">
+      <h2 class="sub-title mb-4">بيانات الطفل</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <div>
+          <label class="input-label">اسم الطفل</label>
+          <input type="text" class="input-field" placeholder="مثال: محمد علي" />
+        </div>
+
+        <div>
+          <label class="input-label">العمر</label>
+          <input type="number" class="input-field" placeholder="مثال: 4" />
+        </div>
+
+        <div>
+          <label class="input-label">رقم الملف الطبي (اختياري)</label>
+          <input type="text" class="input-field" placeholder="رقم الملف" />
+        </div>
+
+      </div>
+    </section>
+
+    <!-- منطقة الفحص -->
+    <section class="box mt-8">
+      <h2 class="sub-title mb-4">الفحص عبر الفيديو</h2>
+
+      <p class="text-gray-600 mb-4">
+        الرجاء توجيه الطفل إلى الكاميرا واتباع التعليمات الظاهرة لإجراء فحص حركة العين.
+      </p>
+
+      <div class="video-box">
+
+        <!-- فيديو مباشر -->
+        <video id="cameraFeed" autoplay muted playsinline class="video-preview"></video>
+
+        <div class="video-actions">
+          <button id="startRecording" class="record-btn">بدء التسجيل</button>
+          <button id="stopRecording" class="stop-btn hidden">إيقاف</button>
+        </div>
+
+      </div>
+
+      <!-- أو رفع فيديو جاهز -->
+      <div class="mt-6">
+        <label class="input-label mb-2 block">أو ارفع فيديو تم تصويره مسبقًا</label>
+        <input type="file" accept="video/*" class="upload-input" />
+      </div>
+
+      <button class="main-btn mt-6 w-full">إرسال الفحص للتحليل</button>
+
+    </section>
+
+  </main>
+
+
+  <!-- تشغيل الكاميرا -->
+  <script>
+    const video = document.getElementById('cameraFeed');
+    const startBtn = document.getElementById('startRecording');
+    const stopBtn = document.getElementById('stopRecording');
+    let stream;
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+      } catch (err) {
+        alert("تعذّر تشغيل الكاميرا. الرجاء السماح بالوصول.");
+      }
+    }
+
+    startCamera();
+
+    startBtn.addEventListener("click", () => {
+      startBtn.classList.add("hidden");
+      stopBtn.classList.remove("hidden");
+    });
+
+    stopBtn.addEventListener("click", () => {
+      stopBtn.classList.add("hidden");
+      startBtn.classList.remove("hidden");
+    });
+  </script>
+
+</body>
+</html>

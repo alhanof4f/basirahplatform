@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<script src="app.js"></script>
+
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>الدعم الفني – منصة بصيرة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-soft text-main flex">
+
+  <!-- القائمة الجانبية -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">ب</div>
+      <h3 class="sidebar-title">منصة بصيرة</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" class="sidebar-link">لوحة التحكم</a>
+      <a href="scan.html" class="sidebar-link">بدء فحص جديد</a>
+      <a href="analysis.html" class="sidebar-link">التحليل</a>
+      <a href="reports.html" class="sidebar-link">التقارير</a>
+      <a href="users.html" class="sidebar-link">إدارة المستخدمين</a>
+      <a href="billing.html" class="sidebar-link">الفوترة</a>
+      <a href="support.html" class="sidebar-link active">الدعم الفني</a>
+      <a href="settings.html" class="sidebar-link">الإعدادات</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="login.html" class="logout-btn">تسجيل الخروج</a>
+    </div>
+  </aside>
+
+  <!-- المحتوى -->
+  <main class="main-content">
+
+    <h1 class="page-title">الدعم الفني</h1>
+
+    <section class="box mt-6">
+      <h2 class="sub-title">إرسال تذكرة دعم</h2>
+
+      <form class="mt-4 space-y-4">
+        <div>
+          <label class="field-label">عنوان المشكلة</label>
+          <input type="text" class="input" placeholder="مثال: مشكلة في رفع الفيديو">
+        </div>
+
+        <div>
+          <label class="field-label">وصف المشكلة</label>
+          <textarea class="textarea h-28" placeholder="اشرح المشكلة التي واجهتك بالتفصيل"></textarea>
+        </div>
+
+        <div>
+          <label class="field-label">مرفقات (اختياري)</label>
+          <input type="file" class="input">
+        </div>
+
+        <button class="big-btn bg-primary hover:bg-primary-dark">إرسال التذكرة</button>
+      </form>
+    </section>
+
+    <section class="box mt-6">
+      <h2 class="sub-title">الأسئلة الشائعة</h2>
+
+      <div class="faq mt-4 space-y-4 text-[14px] text-gray-700">
+
+        <div>
+          <p class="font-bold text-main mb-1">هل يتم حفظ الفيديوهات؟</p>
+          <p>يتم حفظ المقاطع في بيئة سحابية آمنة ومشفّرة مع تحكم كامل للمركز.</p>
+        </div>
+
+        <div>
+          <p class="font-bold text-main mb-1">هل النتيجة تعتبر تشخيصًا؟</p>
+          <p>النتيجة هي أداة دعم للطبيب وليست تشخيصًا نهائيًا.</p>
+        </div>
+
+        <div>
+          <p class="font-bold text-main mb-1">كيف يتم تدريب نموذج الذكاء الاصطناعي؟</p>
+          <p>تم تدريب النموذج على بيانات مجهولة الهوية بالتعاون مع مراكز متخصصة.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

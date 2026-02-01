@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<script src="app.js"></script>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>منصة بصيرة – تحليل التوحّد بالذكاء الاصطناعي</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --primary: #155EDE;    /* الأزرق الطبي */
+      --secondary: #7266D3;  /* البنفسجي الهادئ (التوحد) */
+      --accent: #F7C948;     /* أصفر */
+      --text-dark: #1F2937;
+      --bg-soft: #F3F6FC;
+    }
+  </style>
+</head>
+
+<body class="bg-[var(--bg-soft)] text-[var(--text-dark)] font-sans">
+
+  <!-- هيدر الموقع -->
+  <header class="bg-white shadow-sm sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center font-bold text-lg">
+          ب
+        </div>
+        <div>
+          <h1 class="text-lg font-semibold">منصّة بصيرة</h1>
+          <p class="text-xs text-gray-500">تحليل بصري مبكر لمؤشرات التوحّد</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#features" class="hover:text-[var(--primary)]">المزايا</a>
+        <a href="#how" class="hover:text-[var(--primary)]">طريقة العمل</a>
+        <a href="#pricing" class="hover:text-[var(--primary)]">الاشتراك</a>
+      </nav>
+
+      <a href="login.html" class="px-5 py-2 text-sm rounded-xl bg-[var(--primary)] text-white hover:bg-blue-700">
+        دخول المراكز
+      </a>
+    </div>
+  </header>
+
+  <!-- البانر الرئيسي -->
+  <section class="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 items-center gap-10">
+
+    <div>
+      <h2 class="text-3xl md:text-4xl font-bold leading-relaxed">
+        ذكاء اصطناعي يُساعد الأطباء  
+        <span class="text-[var(--secondary)]">في كشف مؤشرات التوحّد مبكرًا</span>
+      </h2>
+
+      <p class="mt-4 text-gray-600 leading-7">
+        تعتمد منصة <strong>بصيرة</strong> على تحليل بصري ذكي لمسار العين لدى الأطفال،
+        للمساهمة في دعم القرار الطبي وتسهيل اكتشاف المؤشرات المبكرة لطيف التوحد.
+      </p>
+
+      <div class="mt-6 flex gap-4">
+        <a href="login.html"
+           class="px-6 py-3 rounded-xl bg-[var(--primary)] text-white text-sm hover:bg-blue-700">
+          دخول المراكز
+        </a>
+
+        <a href="#pricing"
+           class="px-6 py-3 rounded-xl border border-gray-300 text-sm hover:bg-gray-50">
+          خطط الاشتراك
+        </a>
+      </div>
+    </div>
+
+    <div class="relative">
+      <div class="w-full h-80 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] shadow-xl"></div>
+      <div class="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold">
+        عرض توضيحي للواجهة
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم الميزات -->
+  <section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+
+      <h3 class="text-2xl font-semibold text-center mb-12">
+        لماذا تعتمد المراكز على منصة بصيرة؟
+      </h3>
+
+      <div class="grid md:grid-cols-3 gap-8 text-center">
+
+        <div class="p-6 bg-[var(--bg-soft)] rounded-2xl">
+          <h4 class="font-semibold text-lg mb-3 text-[var(--primary)]">تحليل ذكاء اصطناعي</h4>
+          <p class="text-gray-600 text-sm">خوارزميات متقدمة لتحليل حركة العين.</p>
+        </div>
+
+        <div class="p-6 bg-[var(--bg-soft)] rounded-2xl">
+          <h4 class="font-semibold text-lg mb-3 text-[var(--secondary)]">نتيجة دقيقة</h4>
+          <p class="text-gray-600 text-sm">مؤشر احتمالي واضح يدعم الطبيب في اتخاذ قرار المتابعة.</p>
+        </div>
+
+        <div class="p-6 bg-[var(--bg-soft)] rounded-2xl">
+          <h4 class="font-semibold text-lg mb-3 text-[var(--accent)]">توافق طبي</h4>
+          <p class="text-gray-600 text-sm">مصمم للمراكز والعيادات وفق المعايير الصحية.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم طريقة العمل -->
+  <section id="how" class="py-20">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h3 class="text-2xl font-semibold mb-10">كيف تعمل منصة بصيرة؟</h3>
+
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="p-6 bg-white border rounded-2xl shadow-sm">
+          <p class="text-[var(--primary)] font-bold text-xl mb-3">1</p>
+          <p class="text-sm text-gray-600">رفع فيديو قصير للطفل أو تسجيل مباشر.</p>
+        </div>
+
+        <div class="p-6 bg-white border rounded-2xl shadow-sm">
+          <p class="text-[var(--secondary)] font-bold text-xl mb-3">2</p>
+          <p class="text-sm text-gray-600">تحليل مسار العين باستخدام الذكاء الاصطناعي.</p>
+        </div>
+
+        <div class="p-6 bg-white border rounded-2xl shadow-sm">
+          <p class="text-[var(--accent)] font-bold text-xl mb-3">3</p>
+          <p class="text-sm text-gray-600">عرض النتيجة + تقرير كامل للطبيب.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- قسم الأسعار -->
+  <section id="pricing" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+
+      <h3 class="text-2xl font-semibold text-center mb-12">خطط الاشتراك للمراكز</h3>
+
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <!-- شهرية -->
+        <div class="p-6 border rounded-2xl shadow-sm">
+          <h4 class="text-lg font-semibold mb-3">اشتراك 6 أشهر</h4>
+          <p class="text-3xl font-bold text-[var(--primary)] mb-4">900 ر.س</p>
+          <ul class="text-sm text-gray-600 space-y-2 mb-6">
+            <li>عدد غير محدود من الفحوصات</li>
+            <li>دعم فني</li>
+            <li>تقارير PDF</li>
+          </ul>
+          <a href="login.html" class="block text-center py-2 rounded-xl bg-[var(--primary)] text-white">
+            اشترك الآن
+          </a>
+        </div>
+
+        <!-- سنوي -->
+        <div class="p-6 border rounded-2xl shadow-sm">
+          <h4 class="text-lg font-semibold mb-3">اشتراك سنوي</h4>
+          <p class="text-3xl font-bold text-[var(--secondary)] mb-4">1500 ر.س</p>
+          <ul class="text-sm text-gray-600 space-y-2 mb-6">
+            <li>عدد غير محدود من الفحوصات</li>
+            <li>تحليل أسرع</li>
+            <li>ميزات إضافية مستقبلية</li>
+          </ul>
+          <a href="login.html" class="block text-center py-2 rounded-xl bg-[var(--secondary)] text-white">
+            اشترك الآن
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- فوتر -->
+  <footer class="py-10 text-center text-sm text-gray-500">
+    جميع الحقوق محفوظة © منصة بصيرة 2025
+  </footer>
+
+</body>
+</html>

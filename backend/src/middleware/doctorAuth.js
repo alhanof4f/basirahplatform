@@ -13,18 +13,20 @@ const doctorAuth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const doctor = await Doctor.findById(decoded.id)
-      .select("_id center") // 👈 فقط اللي نحتاجه
+      .select("_id center")
       .lean();
 
     if (!doctor) {
       return res.status(401).json({ message: "Doctor not found" });
     }
 
-    // ❗ نمرر البيانات كما هي بدون تعقيد
+    // ✅ نثبت كل الصيغ لتفادي أي تعارض
     req.doctor = {
       _id: doctor._id,
       center: doctor.center || null,
     };
+
+    req.doctorId = doctor._id; // 🔑 هذا هو السطر الحاسم
 
     next();
   } catch (error) {

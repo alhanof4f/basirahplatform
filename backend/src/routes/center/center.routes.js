@@ -1,36 +1,22 @@
-import Subscription from "../../models/Subscription.js";
+import express from "express";
+import authCenter from "../middleware/authCenter.js";
 
-/**
- * GET /api/v1/center/subscription
- * معلومات الاشتراك (مختصرة للإعدادات)
- */
-export const getMySubscription = async (req, res) => {
-  try {
-    const subscription = await Subscription.findOne({
-      center: req.centerId,
-    }).sort({ createdAt: -1 });
+import { getCenterDashboard } from "../controllers/center/centerDashboardController.js";
+import { listCenterDoctors } from "../controllers/center/centerDoctorController.js";
+import { listCenterPatients } from "../controllers/center/centerPatientController.js";
+import { getMySubscription } from "../controllers/center/centerSubscriptionController.js";
+import { getCenterSettings, updateCenterSettings } from "../controllers/center/centerSettingsController.js";
 
-    // إذا لم يكن هناك اشتراك مسجل، الرجوع بافتراضي (تجريبي)
-    if (!subscription) {
-      return res.json({
-        plan: "تجريبي",
-        status: "active",
-        endDate: null,
-        isTrial: true, // ✅ مهم للواجهة
-      });
-    }
+const router = express.Router();
 
-    // إذا كان الاشتراك موجودًا، نرجع البيانات
-    res.json({
-      plan: subscription.subscriptionPlan,
-      status: subscription.status,
-      endDate: subscription.endDate,
-      isTrial: subscription.subscriptionPlan === "تجريبي",
-      // يمكن إضافة حقول أخرى للتفاصيل الخاصة بالاشتراك في المستقبل
-    });
-  } catch (error) {
-    console.error("getMySubscription error:", error);
-    // تحسين رسالة الخطأ بناءً على سبب الفشل
-    res.status(500).json({ message: `فشل جلب الاشتراك: ${error.message}` });
-  }
-};
+// 🔐 حماية كل مسارات السنتر
+router.use(authCenter);
+
+router.get("/dashboard", getCenterDashboard);
+router.get("/doctors", listCenterDoctors);
+router.get("/patients", listCenterPatients);
+router.get("/subscription", getMySubscription);
+router.get("/settings", getCenterSettings);
+router.put("/settings", updateCenterSettings);
+
+export default router;

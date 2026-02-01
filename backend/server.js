@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import path from "path";
 import fileUpload from "express-fileupload";
 
 /* ======================
@@ -41,12 +40,13 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 /* ======================
-   CORS (آمن + Local + Vercel)
+   CORS (Local + Vercel + Render)
 ====================== */
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:3000",
+  "https://basirahplatform.vercel.app",
   "https://basirah-final.vercel.app",
 ];
 
@@ -72,14 +72,15 @@ app.use(
   })
 );
 
-// مهم جدًا للـ preflight
+// مهم للـ preflight في Render
 app.options("*", cors());
 
 /* ======================
    Body & Uploads
 ====================== */
-app.use(express.json());
-app.use(fileUpload()); // مرة وحدة فقط
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 /* ======================
    Static Files
@@ -108,7 +109,7 @@ app.use("/api/v1/doctor", doctorRoutes);
 app.use("/api/v1/center/auth", centerAuthRoutes);
 app.use("/api/v1/center", centerRoutes);
 
-// Sessions (خاص بالفحص / التصوير)
+// Sessions
 app.use("/api/v1/sessions", sessionRoutes);
 
 /* ======================
@@ -123,7 +124,7 @@ mongoose
   });
 
 /* ======================
-   404 Handler (API فقط)
+   404 Handler (API only)
 ====================== */
 app.use("/api", (req, res) => {
   res.status(404).json({

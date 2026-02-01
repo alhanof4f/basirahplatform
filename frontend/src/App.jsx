@@ -57,14 +57,18 @@ export default function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Landing */}
+        {/* ================= Landing ================= */}
         <Route path="/" element={<Landing />} />
 
         {/* ================= Admin ================= */}
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route
           path="/admin-dashboard"
-          element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>}
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
         />
         <Route path="/admin-centers" element={<ProtectedAdminRoute><AdminCenters /></ProtectedAdminRoute>} />
         <Route path="/admin-doctors" element={<ProtectedAdminRoute><AdminDoctors /></ProtectedAdminRoute>} />
@@ -78,7 +82,10 @@ export default function App() {
         <Route path="/admin-invoices" element={<ProtectedAdminRoute><AdminInvoices /></ProtectedAdminRoute>} />
 
         {/* ================= Center ================= */}
+        {/* ✅ Login (مسارين عشان ما تنكسر أي روابط) */}
         <Route path="/center" element={<CenterLogin />} />
+        <Route path="/center-login" element={<CenterLogin />} />
+
         <Route path="/center-dashboard" element={<CenterDashboard />} />
         <Route path="/center-doctors" element={<CenterDoctors />} />
         <Route path="/center-patients" element={<CenterPatients />} />
@@ -103,18 +110,14 @@ export default function App() {
         />
 
         {/* ================= Notes ================= */}
-
-        {/* ملاحظات عامة (قديمة – لا نكسرها) */}
         <Route path="/doctor-notes" element={<DoctorNotes />} />
         <Route path="/doctor-notes/:patientId" element={<DoctorNotes />} />
 
-        {/* 🆕 ملاحظات الفحص (بعد إنهاء الفحص) */}
         <Route
           path="/doctor-test-notes/:testId"
           element={<DoctorTestNotes />}
         />
 
-        {/* ملاحظات المريض العامة */}
         <Route
           path="/doctor-patient-notes/:patientId"
           element={<DoctorPatientNotes />}

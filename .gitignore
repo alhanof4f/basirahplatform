@@ -7,7 +7,7 @@ yarn-debug.log*
 yarn-error.log*
 
 ################################
-# Environment
+# Environment variables
 ################################
 .env
 .env.*
@@ -17,12 +17,16 @@ yarn-error.log*
 ################################
 backend/.venv/
 backend/venv/
+__pycache__/
+*.pyc
 
-# ignore python files only
+# ignore python AI files only (keep JS)
 backend/src/ai/*.py
 backend/src/ai/__pycache__/
 
-# ignore model files anywhere
+################################
+# AI / ML model files (never commit)
+################################
 *.h5
 *.pt
 *.pth
@@ -34,12 +38,6 @@ backend/src/ai/__pycache__/
 # Runtime uploads (patients data)
 ################################
 backend/uploads/
-
-################################
-# Python cache
-################################
-__pycache__/
-*.pyc
 
 ################################
 # OS / IDE
@@ -56,6 +54,6 @@ logs/
 *.log
 
 ################################
-# ALLOW JS AI INTEGRATION FILES
+# ✅ ALLOW JS AI INTEGRATION FILES
 ################################
 !backend/src/ai/*.js

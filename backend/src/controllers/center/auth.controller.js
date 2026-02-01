@@ -43,13 +43,15 @@ export async function loginCenter(req, res) {
 
     // إنشاء التوكن
     const token = jwt.sign(
-      {
-        centerId: center._id,
-        role: "center",
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+  {
+    centerId: center._id,   // 🔥 هذا هو المفتاح
+    email: center.email,
+    role: "center"
+  },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
 
     return res.json({
       token,

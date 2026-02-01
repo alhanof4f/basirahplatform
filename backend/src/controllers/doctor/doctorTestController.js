@@ -48,7 +48,7 @@ export const runTestAI = async (req, res) => {
       });
     }
 
-    let aiResponse = null;
+    let aiResponse;
 
     try {
       const { data } = await axios.post(
@@ -63,6 +63,9 @@ export const runTestAI = async (req, res) => {
       aiResponse = data?.result || data;
     } catch (aiError) {
       console.error("AI SERVICE ERROR:", aiError.message);
+      return res.status(502).json({
+        message: "تعذر الاتصال بخدمة الذكاء الاصطناعي",
+      });
     }
 
     /* ===============================

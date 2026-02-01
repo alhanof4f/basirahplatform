@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 import path from "path";
-import fs from "fs"; // ✅ أضفناه فقط
+import fs from "fs";
 import Test from "../../models/Test.js";
-// import runAI from "../../ai/runAI.js";
-
-
+// import runAI from "../../ai/runAI.js"; // 🔴 معطّل مؤقتًا للنشر
 
 /* ===============================
    🔥 تشغيل الذكاء الاصطناعي لفحص
+   (مُعطّل مؤقتًا – Safe for Deploy)
 ================================ */
 export const runTestAI = async (req, res) => {
   try {
@@ -22,21 +21,22 @@ export const runTestAI = async (req, res) => {
       return res.status(404).json({ message: "الفحص غير موجود" });
     }
 
-    // ✅✅✅ التعديل الحقيقي هنا (مسار الصور)
+    /* ===============================
+       مسار الصور (يُستخدم لاحقًا مع AI)
+    ================================ */
     const scansPath = path.join(
-      process.cwd(),   // ← مجلد backend الفعلي
+      process.cwd(),
       "uploads",
       "scans",
       testId
     );
 
-    // ✅ تشغيل الذكاء الاصطناعي
-    //const ai = await runAI(scansPath);
+    // 🔴 تشغيل الذكاء الاصطناعي (مُعطّل مؤقتًا)
+    // const ai = await runAI(scansPath);
 
     /* ===============================
-       🔥 قراءة الهِيت ماب وتحويله Base64
+       قراءة heatmap إن وُجدت (اختياري)
     ================================ */
-    // ✅✅✅ نفس التعديل هنا
     const heatmapFile = path.join(
       process.cwd(),
       "uploads",
@@ -53,31 +53,30 @@ export const runTestAI = async (req, res) => {
     }
 
     /* ===============================
-       حفظ نتيجة الذكاء الاصطناعي
+       نتيجة مؤقتة (بدون AI)
     ================================ */
     test.aiResult = {
-      label: ai.label,               // ASD | Normal | Inconclusive
-      confidence: ai.confidence,     // رقم من 0 إلى 1
-      heatmapImage: heatmapBase64,   // ✅ الآن يوصل صح
-      gazeStats: ai.gazeStats || {
+      label: "pending",          // ⏳ بانتظار تفعيل الذكاء
+      confidence: 0,
+      heatmapImage: heatmapBase64,
+      gazeStats: {
         center: 0,
         left: 0,
         right: 0,
       },
     };
 
-    // ⚠️ نترك الحالة كما هي (scanned)
     test.status = "scanned";
-
     await test.save();
 
-    res.json({
+    return res.json({
       success: true,
+      message: "تم حفظ الفحص (التحليل معطّل مؤقتًا)",
       aiResult: test.aiResult,
     });
   } catch (error) {
     console.error("runTestAI error:", error);
-    res.status(500).json({ message: "فشل تحليل الفحص" });
+    res.status(500).json({ message: "فشل معالجة الفحص" });
   }
 };
 
@@ -212,7 +211,7 @@ export const approveTest = async (req, res) => {
 };
 
 /* ===============================
-   فحوصات الطبيب (مع المسودات)
+   فحوصات الطبيب
 ================================ */
 export const getMyTests = async (req, res) => {
   try {
@@ -230,7 +229,6 @@ export const getMyTests = async (req, res) => {
   }
 };
 
-
 /* ===============================
    فحوصات مريض
 ================================ */
@@ -243,11 +241,10 @@ export const getTestsByPatient = async (req, res) => {
     }
 
     const tests = await Test.find({
-  patient: patientId,
-  doctor: req.doctor._id,
-  status: { $in: ["approved", "draft"] },
-}).sort({ createdAt: -1 });
-
+      patient: patientId,
+      doctor: req.doctor._id,
+      status: { $in: ["approved", "draft"] },
+    }).sort({ createdAt: -1 });
 
     res.json(tests);
   } catch (error) {
@@ -257,7 +254,7 @@ export const getTestsByPatient = async (req, res) => {
 };
 
 /* ===============================
-   حذف تقرير / فحص
+   حذف تقرير
 ================================ */
 export const deleteTest = async (req, res) => {
   try {
@@ -282,6 +279,7 @@ export const deleteTest = async (req, res) => {
     res.status(500).json({ message: "فشل حذف التقرير" });
   }
 };
+
 /* ===============================
    حفظ التقرير كمسودة
 ================================ */
@@ -303,7 +301,6 @@ export const updateTestStatus = async (req, res) => {
       return res.status(404).json({ message: "الفحص غير موجود" });
     }
 
-    // نسمح فقط بالمسودة
     if (status !== "draft") {
       return res.status(400).json({ message: "حالة غير مدعومة" });
     }

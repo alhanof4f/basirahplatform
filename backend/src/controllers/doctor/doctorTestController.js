@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 import path from "path";
 import fs from "fs"; // ✅ أضفناه فقط
 import Test from "../../models/Test.js";
-import { runAI } from "../../ai/runAI.js";
+// import runAI from "../../ai/runAI.js";
+
 
 
 /* ===============================
@@ -30,7 +31,7 @@ export const runTestAI = async (req, res) => {
     );
 
     // ✅ تشغيل الذكاء الاصطناعي
-    const ai = await runAI(scansPath);
+    //const ai = await runAI(scansPath);
 
     /* ===============================
        🔥 قراءة الهِيت ماب وتحويله Base64

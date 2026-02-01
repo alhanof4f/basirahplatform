@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
+import axios from "axios";
 import Test from "../../models/Test.js";
-import runAI from "../../ai/runAI.js"; // 🔴 معطّل مؤقتًا للنشر
 
 /* ===============================
-   🔥 تشغيل الذكاء الاصطناعي لفحص
-   (مُعطّل مؤقتًا – Safe for Deploy)
+   🔥 تشغيل الذكاء الاصطناعي (AI Service خارجي)
+   🔒 آمن للإنتاج – لا Python محلي
 ================================ */
 export const runTestAI = async (req, res) => {
   try {
@@ -22,7 +22,7 @@ export const runTestAI = async (req, res) => {
     }
 
     /* ===============================
-       مسار الصور (يُستخدم لاحقًا مع AI)
+       مسار الصور
     ================================ */
     const scansPath = path.join(
       process.cwd(),
@@ -31,20 +31,44 @@ export const runTestAI = async (req, res) => {
       testId
     );
 
-    // 🔴 تشغيل الذكاء الاصطناعي (مُعطّل مؤقتًا)
-    const ai = await runAI(scansPath);
+    if (!fs.existsSync(scansPath)) {
+      return res.status(400).json({
+        message: "مسار صور الفحص غير موجود",
+      });
+    }
 
     /* ===============================
-       قراءة heatmap إن وُجدت (اختياري)
+       استدعاء AI Service
     ================================ */
-    const heatmapFile = path.join(
-      process.cwd(),
-      "uploads",
-      "scans",
-      testId,
-      "gaze_heatmap.png"
-    );
+    const aiServiceUrl = process.env.AI_SERVICE_URL;
 
+    if (!aiServiceUrl) {
+      return res.status(500).json({
+        message: "AI_SERVICE_URL غير مهيأ",
+      });
+    }
+
+    let aiResponse = null;
+
+    try {
+      const { data } = await axios.post(
+        `${aiServiceUrl}/analyze`,
+        {
+          frames_path: scansPath,
+          test_id: testId,
+        },
+        { timeout: 120000 } // دقيقتين
+      );
+
+      aiResponse = data?.result || data;
+    } catch (aiError) {
+      console.error("AI SERVICE ERROR:", aiError.message);
+    }
+
+    /* ===============================
+       قراءة heatmap إن وُجد
+    ================================ */
+    const heatmapFile = path.join(scansPath, "gaze_heatmap.png");
     let heatmapBase64 = null;
 
     if (fs.existsSync(heatmapFile)) {
@@ -53,28 +77,36 @@ export const runTestAI = async (req, res) => {
     }
 
     /* ===============================
-       نتيجة مؤقتة (بدون AI)
+       حفظ نتيجة الذكاء الاصطناعي
     ================================ */
     test.aiResult = {
-  label: ai.label,
-  confidence: ai.confidence,
-  riskLevel: ai.riskLevel,
-  heatmapImage: ai.heatmapImage ?? heatmapBase64,
-  gazeStats: ai.gazeStats ?? {},
-};
-
+      label: aiResponse?.final_result ?? "Inconclusive",
+      confidence:
+        typeof aiResponse?.asd_ratio === "number"
+          ? aiResponse.asd_ratio
+          : null,
+      riskLevel:
+        typeof aiResponse?.asd_ratio === "number"
+          ? aiResponse.asd_ratio >= 0.7
+            ? "High"
+            : aiResponse.asd_ratio <= 0.3
+            ? "Low"
+            : "Medium"
+          : "Unknown",
+      heatmapImage: aiResponse?.heatmap_path ?? heatmapBase64,
+      gazeStats: aiResponse?.gaze_stats ?? {},
+    };
 
     test.status = "scanned";
     await test.save();
 
     return res.json({
       success: true,
-      message: "تم حفظ الفحص (التحليل معطّل مؤقتًا)",
       aiResult: test.aiResult,
     });
   } catch (error) {
     console.error("runTestAI error:", error);
-    res.status(500).json({ message: "فشل معالجة الفحص" });
+    return res.status(500).json({ message: "فشل معالجة الفحص" });
   }
 };
 

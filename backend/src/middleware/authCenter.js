@@ -12,13 +12,23 @@ export default async function authCenter(req, res, next) {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const center = await Center.findById(decoded.id);
+    // 🔑 التصحيح هنا
+    const centerId = decoded.centerId || decoded.id;
+
+    if (!centerId) {
+      return res.status(401).json({ message: "Center not found" });
+    }
+
+    const center = await Center.findById(centerId);
 
     if (!center) {
       return res.status(401).json({ message: "Center not found" });
     }
 
+    // نخزن الاثنين للأمان
     req.center = center;
+    req.centerId = center._id;
+
     next();
   } catch (error) {
     console.error("authCenter error:", error);

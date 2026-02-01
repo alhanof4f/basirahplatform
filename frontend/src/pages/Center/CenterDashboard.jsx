@@ -9,40 +9,32 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/centerApi";
 
-
-
-
 /* =========================
    Helpers
 ========================= */
 
-// تحويل كل القيم (عربي / إنجليزي) إلى قيمة موحدة
+// توحيد نوع الباقة
 const PLAN_MAP = {
-  // تجريبي
   "تجريبي": "trial",
   "تجريبية": "trial",
   trial: "trial",
 
-  // شهري
   "شهري": "monthly",
   "شهريه": "monthly",
   "شهرية": "monthly",
   monthly: "monthly",
 
-  // سنوي
   "سنوي": "yearly",
   "سنوية": "yearly",
   yearly: "yearly",
 };
 
-// الاسم العربي النهائي
 const PLAN_LABELS = {
   trial: "تجريبية",
   monthly: "شهرية",
   yearly: "سنوية",
 };
 
-// الأسعار
 const PLAN_PRICES = {
   trial: 0,
   monthly: 699,
@@ -57,9 +49,9 @@ export default function CenterDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("centerToken");
+
     if (!token) {
-      setError("لم يتم العثور على توكن المركز");
-      setLoading(false);
+      navigate("/center-login");
       return;
     }
 
@@ -68,8 +60,21 @@ export default function CenterDashboard() {
         const res = await api.get("/center/dashboard");
         setData(res.data);
       } catch (err) {
+        console.error("CenterDashboard error:", err);
+
+        // 🔒 لو التوكن غير صالح
+        if (
+          err?.response?.status === 401 ||
+          err?.response?.status === 403
+        ) {
+          localStorage.removeItem("centerToken");
+          navigate("/center-login");
+          return;
+        }
+
         setError(
-          err.response?.data?.message || "فشل تحميل بيانات لوحة التحكم"
+          err?.response?.data?.message ||
+            "فشل تحميل بيانات لوحة التحكم"
         );
       } finally {
         setLoading(false);
@@ -77,12 +82,14 @@ export default function CenterDashboard() {
     };
 
     fetchDashboard();
-  }, []);
+  }, [navigate]);
 
   if (loading)
     return (
       <CenterLayout>
-        <p className="text-center text-slate-400">جاري تحميل البيانات...</p>
+        <p className="text-center text-slate-400">
+          جاري تحميل البيانات...
+        </p>
       </CenterLayout>
     );
 
@@ -95,7 +102,6 @@ export default function CenterDashboard() {
 
   const { stats, recentActivity, subscription } = data;
 
-  // 🔑 التحويل الحقيقي
   const rawPlan = subscription?.plan;
   const planType = PLAN_MAP[rawPlan] || "trial";
 
@@ -106,7 +112,7 @@ export default function CenterDashboard() {
   return (
     <CenterLayout>
       <div className="space-y-8">
-        {/* ===== Header ===== */}
+        {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
             مرحباً بك في لوحة تحكم المركز
@@ -116,7 +122,7 @@ export default function CenterDashboard() {
           </p>
         </div>
 
-        {/* ===== Stats ===== */}
+        {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Stat title="الأطباء" value={stats.doctors} icon={<FaUserMd />} />
           <Stat
@@ -136,7 +142,7 @@ export default function CenterDashboard() {
           />
         </div>
 
-        {/* ===== Middle Section ===== */}
+        {/* Middle */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <div className="bg-white rounded-xl border p-5">
             <h3 className="font-semibold text-slate-800 mb-4">
@@ -144,7 +150,9 @@ export default function CenterDashboard() {
             </h3>
 
             {recentActivity.length === 0 ? (
-              <p className="text-sm text-slate-400">لا توجد نشاطات حديثة</p>
+              <p className="text-sm text-slate-400">
+                لا توجد نشاطات حديثة
+              </p>
             ) : (
               <div className="space-y-3 text-sm">
                 {recentActivity.map((a, i) => (
@@ -164,7 +172,7 @@ export default function CenterDashboard() {
           </div>
         </div>
 
-        {/* ===== Subscription HERO ===== */}
+        {/* Subscription */}
         <div className="bg-gradient-to-l from-slate-900 to-slate-800 text-white rounded-2xl p-6 flex flex-col md:flex-row md:justify-between gap-6">
           <div>
             <p className="text-xs opacity-80">الاشتراك الحالي</p>

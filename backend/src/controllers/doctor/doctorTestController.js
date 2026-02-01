@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
 import Test from "../../models/Test.js";
-// import runAI from "../../ai/runAI.js"; // 🔴 معطّل مؤقتًا للنشر
+import runAI from "../../ai/runAI.js"; // 🔴 معطّل مؤقتًا للنشر
 
 /* ===============================
    🔥 تشغيل الذكاء الاصطناعي لفحص
@@ -32,7 +32,7 @@ export const runTestAI = async (req, res) => {
     );
 
     // 🔴 تشغيل الذكاء الاصطناعي (مُعطّل مؤقتًا)
-    // const ai = await runAI(scansPath);
+    const ai = await runAI(scansPath);
 
     /* ===============================
        قراءة heatmap إن وُجدت (اختياري)
@@ -56,15 +56,13 @@ export const runTestAI = async (req, res) => {
        نتيجة مؤقتة (بدون AI)
     ================================ */
     test.aiResult = {
-      label: "pending",          // ⏳ بانتظار تفعيل الذكاء
-      confidence: 0,
-      heatmapImage: heatmapBase64,
-      gazeStats: {
-        center: 0,
-        left: 0,
-        right: 0,
-      },
-    };
+  label: ai.label,
+  confidence: ai.confidence,
+  riskLevel: ai.riskLevel,
+  heatmapImage: ai.heatmapImage ?? heatmapBase64,
+  gazeStats: ai.gazeStats ?? {},
+};
+
 
     test.status = "scanned";
     await test.save();

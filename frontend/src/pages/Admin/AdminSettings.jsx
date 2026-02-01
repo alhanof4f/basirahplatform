@@ -41,7 +41,7 @@ export default function AdminSettings() {
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const res = await api.get("/admin/settings");
+        const res = await api.get("/settings");
         setName(res.data.name || "");
         setEmail(res.data.email || "");
         setPhone(res.data.phone || "");

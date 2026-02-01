@@ -40,7 +40,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 /* ======================
-   CORS (Local + Vercel + Render)
+   CORS (Local + Vercel + Railway)
 ====================== */
 const allowedOrigins = [
   "http://localhost:5173",
@@ -72,7 +72,7 @@ app.use(
   })
 );
 
-// مهم للـ preflight في Render
+// مهم للـ preflight
 app.options("*", cors());
 
 /* ======================
@@ -113,17 +113,6 @@ app.use("/api/v1/center", centerRoutes);
 app.use("/api/v1/sessions", sessionRoutes);
 
 /* ======================
-   MongoDB
-====================== */
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
-    process.exit(1);
-  });
-
-/* ======================
    404 Handler (API only)
 ====================== */
 app.use("/api", (req, res) => {
@@ -145,10 +134,22 @@ app.use((err, req, res, next) => {
 });
 
 /* ======================
-   Server
+   Server + Mongo (🚨 التعديل المهم هنا)
 ====================== */
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+async function startServer() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ MongoDB connected");
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err.message);
+    // 🚫 لا نستخدم process.exit عشان Railway ما يعتبره Crash
+  }
+}
+
+startServer();

@@ -22,6 +22,9 @@ import centerAuthRoutes from "./src/routes/center/auth.routes.js";
 
 // Sessions
 import sessionRoutes from "./src/routes/center/session.routes.js";
+import adminSettingsRoutes from "./src/routes/admin/settings.routes.js";
+
+app.use("/api/v1/admin/settings", adminSettingsRoutes);
 
 /* ======================
    Config

@@ -2,13 +2,11 @@ import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
 import { runAI } from "../../ai/runAI.js";
-import axios from "axios";
 
 import Test from "../../models/Test.js";
 
 /* ===============================
    🔥 تشغيل الذكاء الاصطناعي (AI Service خارجي)
-   🔒 آمن للإنتاج – لا Python محلي
 ================================ */
 export const runTestAI = async (req, res) => {
   try {
@@ -24,7 +22,7 @@ export const runTestAI = async (req, res) => {
     }
 
     /* ===============================
-       مسار الصور
+       مسار الصور (المهم)
     ================================ */
     const scansPath = path.join(
       process.cwd(),
@@ -39,65 +37,36 @@ export const runTestAI = async (req, res) => {
       });
     }
 
-    /* ===============================
-       استدعاء AI Service
-    ================================ */
-    const aiServiceUrl = process.env.AI_SERVICE_URL;
+    const frames = fs
+      .readdirSync(scansPath)
+      .filter((f) => /\.(png|jpg|jpeg)$/i.test(f));
 
-    if (!aiServiceUrl) {
-      return res.status(500).json({
-        message: "AI_SERVICE_URL غير مهيأ",
-      });
-    }
-
-    let aiResponse;
-
-    try {
-      const { data } = await axios.post(
-        `${aiServiceUrl}/analyze`,
-        {
-          frames_path: scansPath,
-          test_id: testId,
-        },
-        { timeout: 120000 } // دقيقتين
-      );
-
-      aiResponse = data?.result || data;
-    } catch (aiError) {
-      console.error("AI SERVICE ERROR:", aiError.message);
-      return res.status(502).json({
-        message: "تعذر الاتصال بخدمة الذكاء الاصطناعي",
+    if (frames.length === 0) {
+      return res.status(400).json({
+        message: "لا توجد فريمات محفوظة لهذا الفحص",
       });
     }
 
     /* ===============================
-       قراءة heatmap إن وُجد
-    ================================ */
-    const heatmapFile = path.join(scansPath, "gaze_heatmap.png");
-    let heatmapBase64 = null;
-
-    if (fs.existsSync(heatmapFile)) {
-      const buffer = fs.readFileSync(heatmapFile);
-      heatmapBase64 = `data:image/png;base64,${buffer.toString("base64")}`;
-    }
-
-    /* ===============================
-       حفظ نتيجة الذكاء الاصطناعي
+       تشغيل الذكاء الاصطناعي
     ================================ */
     const aiResult = await runAI(scansPath, testId);
 
-test.aiResult = {
-  label: aiResult.label,
-  confidence: aiResult.confidence,
-  riskLevel: aiResult.riskLevel,
-  heatmapImage: aiResult.heatmapImage,
-  gazeStats: aiResult.gazeStats,
-};
+    test.aiResult = {
+      label: aiResult.label,
+      confidence: aiResult.confidence,
+      riskLevel: aiResult.riskLevel,
+      heatmapImage: aiResult.heatmapImage,
+      gazeStats: aiResult.gazeStats,
+    };
 
-test.status = "scanned";
-await test.save();
+    test.status = "scanned";
+    await test.save();
 
-return res.json({ success: true, aiResult: test.aiResult });
+    return res.json({
+      success: true,
+      aiResult: test.aiResult,
+    });
 
   } catch (error) {
     console.error("runTestAI error:", error);

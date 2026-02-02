@@ -2,24 +2,22 @@ import axios from "axios";
 
 export async function runAI(imagesPath, testId) {
   try {
-    const AI_URL = process.env.AI_SERVICE_URL; // https://basirah-ai.up.railway.app
+    const AI_URL = process.env.AI_SERVICE_URL;
     if (!AI_URL) throw new Error("AI_SERVICE_URL not set");
-
-    // ✅ نرسل المسار فقط (مثل ما FastAPI متوقع)
-    const payload = {
-      frames_path: imagesPath,
-      test_id: testId,
-    };
 
     const { data } = await axios.post(
       `${AI_URL}/analyze`,
-      payload,
       {
-        timeout: 1000 * 60 * 5, // 5 دقائق
+        frames_path: imagesPath,
+        test_id: testId,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+        timeout: 1000 * 60 * 5,
       }
     );
 
-    const raw = data?.result;
+    const raw = data?.result ?? null;
 
     if (!raw) {
       return {
@@ -57,10 +55,7 @@ export async function runAI(imagesPath, testId) {
       raw,
     };
   } catch (error) {
-    console.error(
-      "AI SERVICE ERROR:",
-      error?.response?.data || error.message
-    );
+    console.error("AI SERVICE ERROR:", error?.response?.data || error.message);
 
     return {
       label: "Inconclusive",

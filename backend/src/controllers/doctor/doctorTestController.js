@@ -53,12 +53,13 @@ export const runTestAI = async (req, res) => {
     const aiResult = await runAI(scansPath, testId);
 
     test.aiResult = {
-      label: aiResult.label,
-      confidence: aiResult.confidence,
-      riskLevel: aiResult.riskLevel,
-      heatmapImage: aiResult.heatmapImage,
-      gazeStats: aiResult.gazeStats,
-    };
+  label: aiResult.label || "Inconclusive",
+  confidence: aiResult.confidence ?? null,
+  riskLevel: aiResult.riskLevel || "Unknown",
+  heatmapImage: aiResult.heatmapImage,
+  gazeStats: aiResult.gazeStats || {},
+};
+
 
     test.status = "scanned";
     await test.save();

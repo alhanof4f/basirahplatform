@@ -7,11 +7,22 @@ import morgan from "morgan";
 import fileUpload from "express-fileupload";
 
 /* ======================
+   Config
+====================== */
+dotenv.config(); // ✅ مرة وحدة فقط
+
+/* ======================
+   App Init
+====================== */
+const app = express();
+
+/* ======================
    Routes
 ====================== */
 // Admin
 import adminRoutes from "./src/routes/admin/index.js";
 import adminPaymentRoutes from "./src/routes/admin/payment.routes.js";
+import adminSettingsRoutes from "./src/routes/admin/settings.routes.js";
 
 // Doctor
 import doctorRoutes from "./src/routes/doctor/index.js";
@@ -22,19 +33,6 @@ import centerAuthRoutes from "./src/routes/center/auth.routes.js";
 
 // Sessions
 import sessionRoutes from "./src/routes/center/session.routes.js";
-import adminSettingsRoutes from "./src/routes/admin/settings.routes.js";
-
-app.use("/api/v1/admin/settings", adminSettingsRoutes);
-
-/* ======================
-   Config
-====================== */
-dotenv.config(); // ✅ مرة وحدة فقط
-
-/* ======================
-   App Init
-====================== */
-const app = express();
 
 /* ======================
    Security & Logs
@@ -71,7 +69,6 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -102,9 +99,13 @@ app.get("/", (req, res) => {
 ====================== */
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/admin/payments", adminPaymentRoutes);
+app.use("/api/v1/admin/settings", adminSettingsRoutes);
+
 app.use("/api/v1/doctor", doctorRoutes);
+
 app.use("/api/v1/center/auth", centerAuthRoutes);
 app.use("/api/v1/center", centerRoutes);
+
 app.use("/api/v1/sessions", sessionRoutes);
 
 /* ======================
@@ -138,7 +139,7 @@ async function startServer() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB connected");
 
-    console.log("AI_SERVICE_URL:", process.env.AI_SERVICE_URL); // 🔍 للتأكد فقط
+    console.log("AI_SERVICE_URL:", process.env.AI_SERVICE_URL);
 
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running on port ${PORT}`);

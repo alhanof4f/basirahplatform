@@ -41,7 +41,7 @@ export default function AdminSettings() {
   useEffect(() => {
     async function fetchSettings() {
       try {
-        // ✅ التعديل هنا فقط
+        // ✅ المسار الصحيح المتوافق مع الباك إند
         const res = await api.get("/admin/settings");
 
         setName(res.data.name || "");
@@ -134,7 +134,11 @@ export default function AdminSettings() {
           <Input label="الاسم" value={name} onChange={setName} />
           <Input label="البريد الإلكتروني" value={email} onChange={setEmail} />
           <Input label="رقم الجوال" value={phone} onChange={setPhone} />
-          <Input label="اسم المنصة" value={platformName} onChange={setPlatformName} />
+          <Input
+            label="اسم المنصة"
+            value={platformName}
+            onChange={setPlatformName}
+          />
 
           <button onClick={saveProfile} className="btn-primary">
             حفظ التعديلات

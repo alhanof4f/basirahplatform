@@ -1,21 +1,57 @@
 import axios from "axios";
+import fs from "fs";
+import path from "path";
+import FormData from "form-data";
 
 export async function runAI(imagesPath, testId) {
   try {
     const AI_URL = process.env.AI_SERVICE_URL;
     if (!AI_URL) throw new Error("AI_SERVICE_URL not set");
 
+    /* =========================
+       قراءة الصور
+    ========================= */
+    const files = fs
+      .readdirSync(imagesPath)
+      .filter((f) => /\.(png|jpg|jpeg)$/i.test(f));
+
+    if (files.length === 0) {
+      return {
+        label: "Inconclusive",
+        confidence: null,
+        riskLevel: "Unknown",
+        heatmapImage: null,
+        gazeStats: {},
+        raw: null,
+      };
+    }
+
+    /* =========================
+       تجهيز FormData
+    ========================= */
+    const form = new FormData();
+
+    for (const file of files) {
+      form.append(
+        "frames", // 🔥 لازم يطابق FastAPI
+        fs.createReadStream(path.join(imagesPath, file)),
+        file
+      );
+    }
+
+    form.append("test_id", testId);
+
+    /* =========================
+       إرسال الطلب للذكاء الاصطناعي
+    ========================= */
     const { data } = await axios.post(
       `${AI_URL}/analyze`,
+      form,
       {
-        frames_path: imagesPath,
-        test_id: testId,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        timeout: 1000 * 60 * 5,
+        headers: form.getHeaders(),
+        timeout: 1000 * 60 * 5, // 5 دقائق
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
       }
     );
 
@@ -32,6 +68,9 @@ export async function runAI(imagesPath, testId) {
       };
     }
 
+    /* =========================
+       تفسير النتيجة
+    ========================= */
     const ratio =
       typeof raw.asd_ratio === "number" ? raw.asd_ratio : null;
 
@@ -57,7 +96,10 @@ export async function runAI(imagesPath, testId) {
       raw,
     };
   } catch (error) {
-    console.error("AI SERVICE ERROR:", error?.response?.data || error.message);
+    console.error(
+      "AI SERVICE ERROR:",
+      error?.response?.data || error.message
+    );
 
     return {
       label: "Inconclusive",

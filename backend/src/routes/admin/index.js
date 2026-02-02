@@ -7,13 +7,13 @@ import doctorsRoutes from "./doctors.routes.js";
 import subscriptionsRoutes from "./subscriptions.routes.js";
 import billingRoutes from "./billing.routes.js";
 import reportsRoutes from "./reports.routes.js";
-import settingsRoutes from "./settings.routes.js";
+// ❌ حذف settingsRoutes من هنا
 import activityRoutes from "./activity.routes.js";
-import analyticsRoutes from "./analytics.routes.js"; // ✅ مهم
+import analyticsRoutes from "./analytics.routes.js";
 import notificationsRoutes from "./notifications.routes.js";
 
-
 const router = express.Router();
+
 router.use("/notifications", notificationsRoutes);
 router.use("/auth", authRoutes);
 router.use("/dashboard", dashboardRoutes);
@@ -22,8 +22,8 @@ router.use("/doctors", doctorsRoutes);
 router.use("/subscriptions", subscriptionsRoutes);
 router.use("/billing", billingRoutes);
 router.use("/reports", reportsRoutes);
-router.use("/settings", settingsRoutes);
+// ❌ router.use("/settings", settingsRoutes);  ← محذوف
 router.use("/activity", activityRoutes);
-router.use("/analytics", analyticsRoutes); // ✅ هنا الحل
+router.use("/analytics", analyticsRoutes);
 
 export default router;

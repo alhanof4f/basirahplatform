@@ -11,13 +11,21 @@ export default function requireAdmin(req, res, next) {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (decoded.role !== "admin") {
+    // ✅ السماح بكل أدوار الأدمن
+    if (!decoded.role || !decoded.role.includes("ADMIN")) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    req.admin = decoded;
+    // ✅ هذا هو السطر الأهم
+    req.adminId = decoded.id || decoded._id || decoded.adminId;
+
+    if (!req.adminId) {
+      return res.status(401).json({ message: "Invalid admin token" });
+    }
+
     next();
   } catch (error) {
+    console.error("requireAdmin error:", error);
     return res.status(401).json({ message: "Invalid token" });
   }
 }

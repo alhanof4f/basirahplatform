@@ -22,7 +22,6 @@ const app = express();
 // Admin
 import adminRoutes from "./src/routes/admin/index.js";
 import adminPaymentRoutes from "./src/routes/admin/payment.routes.js";
-import adminSettingsRoutes from "./src/routes/admin/settings.routes.js";
 
 // Doctor
 import doctorRoutes from "./src/routes/doctor/index.js";
@@ -99,7 +98,6 @@ app.get("/", (req, res) => {
 ====================== */
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/admin/payments", adminPaymentRoutes);
-app.use("/api/v1/admin/settings", adminSettingsRoutes);
 
 app.use("/api/v1/doctor", doctorRoutes);
 

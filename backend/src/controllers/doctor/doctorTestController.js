@@ -2,11 +2,10 @@ import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
 import { runAI } from "../../ai/runAI.js";
-
 import Test from "../../models/Test.js";
 
 /* ===============================
-   🔥 تشغيل الذكاء الاصطناعي (AI Service خارجي)
+   تشغيل الذكاء الاصطناعي
 ================================ */
 export const runTestAI = async (req, res) => {
   try {
@@ -22,18 +21,13 @@ export const runTestAI = async (req, res) => {
     }
 
     /* ===============================
-       مسار الصور (المهم)
+       مسار الفريمات
     ================================ */
-    const scansPath = path.join(
-      process.cwd(),
-      "uploads",
-      "scans",
-      testId
-    );
+    const scansPath = path.join(process.cwd(), "uploads", "scans", testId);
 
     if (!fs.existsSync(scansPath)) {
       return res.status(400).json({
-        message: "مسار صور الفحص غير موجود",
+        message: "لا توجد فريمات محفوظة لهذا الفحص",
       });
     }
 
@@ -43,21 +37,24 @@ export const runTestAI = async (req, res) => {
 
     if (frames.length === 0) {
       return res.status(400).json({
-        message: "لا توجد فريمات محفوظة لهذا الفحص",
+        message: "لا توجد فريمات صالحة للتحليل",
       });
     }
 
     /* ===============================
-       تشغيل الذكاء الاصطناعي
+       تشغيل AI (مرة واحدة)
     ================================ */
     const aiResult = await runAI(scansPath, testId);
 
+    /* ===============================
+       حفظ النتيجة (حتى لو Inconclusive)
+    ================================ */
     test.aiResult = {
-      label: aiResult.label,
-      confidence: aiResult.confidence,
-      riskLevel: aiResult.riskLevel,
-      heatmapImage: aiResult.heatmapImage,
-      gazeStats: aiResult.gazeStats,
+      label: aiResult.label ?? "Inconclusive",
+      confidence: aiResult.confidence ?? null,
+      riskLevel: aiResult.riskLevel ?? "Unknown",
+      heatmapImage: aiResult.heatmapImage ?? null,
+      gazeStats: aiResult.gazeStats ?? {},
     };
 
     test.status = "scanned";
@@ -67,10 +64,11 @@ export const runTestAI = async (req, res) => {
       success: true,
       aiResult: test.aiResult,
     });
-
   } catch (error) {
     console.error("runTestAI error:", error);
-    return res.status(500).json({ message: "فشل معالجة الفحص" });
+    return res.status(500).json({
+      message: "فشل تشغيل تحليل الذكاء الاصطناعي",
+    });
   }
 };
 
@@ -98,7 +96,7 @@ export const createTest = async (req, res) => {
       doctor: req.doctor._id,
       center: req.doctor.center,
       type: "eye_tracking",
-      status: "scanned",
+      status: "created", // ✅ قبل تشغيل AI
       duration: Number(duration),
       stoppedEarly: Boolean(stoppedEarly),
     });
@@ -211,7 +209,7 @@ export const getMyTests = async (req, res) => {
   try {
     const tests = await Test.find({
       doctor: req.doctor._id,
-      status: { $in: ["approved", "draft"] },
+      status: { $in: ["approved", "draft", "scanned"] },
     })
       .populate("patient", "name file_number")
       .sort({ createdAt: -1 });
@@ -237,7 +235,6 @@ export const getTestsByPatient = async (req, res) => {
     const tests = await Test.find({
       patient: patientId,
       doctor: req.doctor._id,
-      status: { $in: ["approved", "draft"] },
     }).sort({ createdAt: -1 });
 
     res.json(tests);

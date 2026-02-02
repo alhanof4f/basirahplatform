@@ -20,13 +20,13 @@ import doctorRoutes from "./src/routes/doctor/index.js";
 import centerRoutes from "./src/routes/center/index.js";
 import centerAuthRoutes from "./src/routes/center/auth.routes.js";
 
-// Sessions (🔒 لا نكسره)
+// Sessions
 import sessionRoutes from "./src/routes/center/session.routes.js";
 
 /* ======================
    Config
 ====================== */
-dotenv.config();
+dotenv.config(); // ✅ مرة وحدة فقط
 
 /* ======================
    App Init
@@ -40,7 +40,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 /* ======================
-   CORS (Local + Vercel + Railway)
+   CORS
 ====================== */
 const allowedOrigins = [
   "http://localhost:5173",
@@ -72,7 +72,6 @@ app.use(
   })
 );
 
-// مهم للـ preflight
 app.options("*", cors());
 
 /* ======================
@@ -97,23 +96,15 @@ app.get("/", (req, res) => {
 /* ======================
    API Routes
 ====================== */
-
-// Admin
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/admin/payments", adminPaymentRoutes);
-
-// Doctor
 app.use("/api/v1/doctor", doctorRoutes);
-
-// Center
 app.use("/api/v1/center/auth", centerAuthRoutes);
 app.use("/api/v1/center", centerRoutes);
-
-// Sessions
 app.use("/api/v1/sessions", sessionRoutes);
 
 /* ======================
-   404 Handler (API only)
+   404 Handler
 ====================== */
 app.use("/api", (req, res) => {
   res.status(404).json({
@@ -134,7 +125,7 @@ app.use((err, req, res, next) => {
 });
 
 /* ======================
-   Server + Mongo (🚨 التعديل المهم هنا)
+   Server + Mongo
 ====================== */
 const PORT = process.env.PORT || 5000;
 
@@ -143,12 +134,13 @@ async function startServer() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB connected");
 
+    console.log("AI_SERVICE_URL:", process.env.AI_SERVICE_URL); // 🔍 للتأكد فقط
+
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (err) {
     console.error("❌ MongoDB connection error:", err.message);
-    // 🚫 لا نستخدم process.exit عشان Railway ما يعتبره Crash
   }
 }
 

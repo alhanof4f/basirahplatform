@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
-import axios from "axios";
+import { runAI } from "../../ai/runAI.js";
+
 import Test from "../../models/Test.js";
 
 /* ===============================
@@ -82,31 +83,21 @@ export const runTestAI = async (req, res) => {
     /* ===============================
        حفظ نتيجة الذكاء الاصطناعي
     ================================ */
-    test.aiResult = {
-      label: aiResponse?.final_result ?? "Inconclusive",
-      confidence:
-        typeof aiResponse?.asd_ratio === "number"
-          ? aiResponse.asd_ratio
-          : null,
-      riskLevel:
-        typeof aiResponse?.asd_ratio === "number"
-          ? aiResponse.asd_ratio >= 0.7
-            ? "High"
-            : aiResponse.asd_ratio <= 0.3
-            ? "Low"
-            : "Medium"
-          : "Unknown",
-      heatmapImage: aiResponse?.heatmap_path ?? heatmapBase64,
-      gazeStats: aiResponse?.gaze_stats ?? {},
-    };
+    const aiResult = await runAI(scansPath, testId);
 
-    test.status = "scanned";
-    await test.save();
+test.aiResult = {
+  label: aiResult.label,
+  confidence: aiResult.confidence,
+  riskLevel: aiResult.riskLevel,
+  heatmapImage: aiResult.heatmapImage,
+  gazeStats: aiResult.gazeStats,
+};
 
-    return res.json({
-      success: true,
-      aiResult: test.aiResult,
-    });
+test.status = "scanned";
+await test.save();
+
+return res.json({ success: true, aiResult: test.aiResult });
+
   } catch (error) {
     console.error("runTestAI error:", error);
     return res.status(500).json({ message: "فشل معالجة الفحص" });

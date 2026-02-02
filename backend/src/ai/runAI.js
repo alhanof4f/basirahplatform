@@ -1,27 +1,44 @@
-// backend/src/ai/runAI.js
 import axios from "axios";
+import fs from "fs";
+import path from "path";
+import FormData from "form-data";
 
 export async function runAI(imagesPath, testId) {
   try {
-    const AI_URL = "http://127.0.0.1:8000/analyze";
+    const AI_URL = process.env.AI_SERVICE_URL; // مثال: https://basirah-ai.up.railway.app
+    if (!AI_URL) throw new Error("AI_SERVICE_URL not set");
 
-    const response = await axios.post(
-      AI_URL,
-      {
-        frames_path: imagesPath,
-        test_id: testId,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        timeout: 1000 * 60 * 5, // 5 دقائق
-      }
-    );
+    const files = fs
+      .readdirSync(imagesPath)
+      .filter((f) => /\.(png|jpg|jpeg)$/i.test(f));
 
-    const raw = response.data?.result;
+    if (files.length === 0) {
+      return {
+        label: "Inconclusive",
+        confidence: null,
+        riskLevel: "Unknown",
+        heatmapImage: null,
+        gazeStats: {},
+        raw: null,
+      };
+    }
 
-    // 🔴 أمان: لو ما رجع شيء
+    const form = new FormData();
+    for (const file of files) {
+      form.append(
+        "files",
+        fs.createReadStream(path.join(imagesPath, file)),
+        file
+      );
+    }
+
+    const { data } = await axios.post(`${AI_URL}/analyze`, form, {
+      headers: form.getHeaders(),
+      timeout: 1000 * 60 * 5, // 5 دقائق
+    });
+
+    const raw = data?.result;
+
     if (!raw) {
       return {
         label: "Inconclusive",
@@ -33,24 +50,10 @@ export async function runAI(imagesPath, testId) {
       };
     }
 
-    // عدد الصور قليل → نفس منطقك القديم
-    if (!raw.images || raw.images === 0) {
-      return {
-        label: "Inconclusive",
-        confidence: null,
-        riskLevel: "Unknown",
-        heatmapImage: null,
-        gazeStats: {},
-        raw,
-      };
-    }
-
-    const ratio =
-      typeof raw.asd_ratio === "number" ? raw.asd_ratio : null;
+    const ratio = typeof raw.asd_ratio === "number" ? raw.asd_ratio : null;
 
     let label = "Inconclusive";
     let riskLevel = "Medium";
-
     if (ratio !== null) {
       if (ratio >= 0.7) {
         label = "ASD";
@@ -71,7 +74,6 @@ export async function runAI(imagesPath, testId) {
     };
   } catch (error) {
     console.error("AI SERVICE ERROR:", error?.response?.data || error.message);
-
     return {
       label: "Inconclusive",
       confidence: null,

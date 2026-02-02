@@ -8,6 +8,9 @@ export async function runAI(imagesPath, testId) {
     const AI_URL = process.env.AI_SERVICE_URL; // مثال: https://basirah-ai.up.railway.app
     if (!AI_URL) throw new Error("AI_SERVICE_URL not set");
 
+    /* =========================
+       قراءة الفريمات
+    ========================= */
     const files = fs
       .readdirSync(imagesPath)
       .filter((f) => /\.(png|jpg|jpeg)$/i.test(f));
@@ -23,21 +26,36 @@ export async function runAI(imagesPath, testId) {
       };
     }
 
+    /* =========================
+       تجهيز FormData
+    ========================= */
     const form = new FormData();
+
     for (const file of files) {
       form.append(
-        "files",
+        "frames", // 🔥 مهم: لازم يطابق FastAPI
         fs.createReadStream(path.join(imagesPath, file)),
         file
       );
     }
 
-    const { data } = await axios.post(`${AI_URL}/analyze`, form, {
-      headers: form.getHeaders(),
-      timeout: 1000 * 60 * 5, // 5 دقائق
-    });
+    form.append("test_id", testId);
 
-    const raw = data?.result;
+    /* =========================
+       إرسال الطلب للـ AI Service
+    ========================= */
+    const { data } = await axios.post(
+      `${AI_URL}/analyze`,
+      form,
+      {
+        headers: form.getHeaders(),
+        timeout: 1000 * 60 * 5, // 5 دقائق
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
+      }
+    );
+
+    const raw = data?.result ?? data;
 
     if (!raw) {
       return {
@@ -50,10 +68,15 @@ export async function runAI(imagesPath, testId) {
       };
     }
 
-    const ratio = typeof raw.asd_ratio === "number" ? raw.asd_ratio : null;
+    /* =========================
+       منطق النتيجة
+    ========================= */
+    const ratio =
+      typeof raw.asd_ratio === "number" ? raw.asd_ratio : null;
 
     let label = "Inconclusive";
     let riskLevel = "Medium";
+
     if (ratio !== null) {
       if (ratio >= 0.7) {
         label = "ASD";
@@ -73,7 +96,11 @@ export async function runAI(imagesPath, testId) {
       raw,
     };
   } catch (error) {
-    console.error("AI SERVICE ERROR:", error?.response?.data || error.message);
+    console.error(
+      "AI SERVICE ERROR:",
+      error?.response?.data || error.message
+    );
+
     return {
       label: "Inconclusive",
       confidence: null,

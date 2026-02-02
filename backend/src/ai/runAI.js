@@ -12,12 +12,14 @@ export async function runAI(imagesPath, testId) {
         test_id: testId,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         timeout: 1000 * 60 * 5,
       }
     );
 
-    const raw = data?.result ?? null;
+    const raw = data?.result ?? data;
 
     if (!raw) {
       return {

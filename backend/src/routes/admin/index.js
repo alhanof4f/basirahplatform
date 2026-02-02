@@ -7,7 +7,7 @@ import doctorsRoutes from "./doctors.routes.js";
 import subscriptionsRoutes from "./subscriptions.routes.js";
 import billingRoutes from "./billing.routes.js";
 import reportsRoutes from "./reports.routes.js";
-// ❌ حذف settingsRoutes من هنا
+import settingsRoutes from "./settings.routes.js"; // ✅ هذا كان ناقص
 import activityRoutes from "./activity.routes.js";
 import analyticsRoutes from "./analytics.routes.js";
 import notificationsRoutes from "./notifications.routes.js";
@@ -22,7 +22,7 @@ router.use("/doctors", doctorsRoutes);
 router.use("/subscriptions", subscriptionsRoutes);
 router.use("/billing", billingRoutes);
 router.use("/reports", reportsRoutes);
-// ❌ router.use("/settings", settingsRoutes);  ← محذوف
+router.use("/settings", settingsRoutes); // ✅ الآن شغال
 router.use("/activity", activityRoutes);
 router.use("/analytics", analyticsRoutes);
 
